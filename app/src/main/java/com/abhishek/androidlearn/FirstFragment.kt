@@ -7,9 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.Navigation
 import com.abhishek.androidlearn.databinding.FragmentFirstBinding
-
-
-
 class FirstFragment : Fragment() {
    private lateinit  var binding: FragmentFirstBinding
    override fun onCreateView(

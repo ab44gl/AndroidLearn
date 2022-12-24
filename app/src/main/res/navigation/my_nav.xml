@@ -24,6 +24,7 @@
             app:destination="@id/firstFragment" />
         <argument
             android:name="total"
+            android:defaultValue="0"
             app:argType="integer" />
     </fragment>
 </navigation>
