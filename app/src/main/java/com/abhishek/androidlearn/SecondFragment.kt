@@ -12,7 +12,6 @@ import com.abhishek.androidlearn.databinding.FragmentSecondBinding
 
 class SecondFragment : Fragment() {
  private lateinit  var binding: FragmentSecondBinding
- val args:SecondFragmentArgs by navArgs()
  override fun onCreateView(
      inflater: LayoutInflater,
      container: ViewGroup?,
@@ -20,14 +19,7 @@ class SecondFragment : Fragment() {
  ): View {
      binding = FragmentSecondBinding.inflate(inflater, container, false)
      //---------------------
-     val total=args.total
-     binding.apply {
-         tvMsgFragSec.text=total.toString()
-         tvMsgFragSec.setOnClickListener {
-             //goto second fragment
-             Navigation.findNavController(binding.root).navigate(R.id.navigateToFirst)
-         }
-     }
+
 
      return binding.root
  }
