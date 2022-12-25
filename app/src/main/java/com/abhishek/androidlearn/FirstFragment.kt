@@ -20,8 +20,7 @@ class FirstFragment : Fragment() {
        binding = FragmentFirstBinding.inflate(inflater, container, false).apply {
            tvMsgFirstFrag.setOnClickListener {
                //goto second fragment
-               val action=FirstFragmentDirections.navigateToSecond(200)
-               Navigation.findNavController(binding.root).navigate(action)
+               Navigation.findNavController(binding.root).navigate(R.id.action_firstFragment_to_secondFragment)
            }
        }
        return binding.root

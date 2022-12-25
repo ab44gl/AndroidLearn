@@ -12,7 +12,7 @@
         android:id="@+id/tv_msg_firstFrag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="First"
+        android:text="Open"
         android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

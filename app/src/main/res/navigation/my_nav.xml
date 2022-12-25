@@ -11,19 +11,16 @@
         android:label="fragment_first"
         tools:layout="@layout/fragment_first" >
         <action
-            android:id="@+id/navigateToSecond"
+            android:id="@+id/action_firstFragment_to_secondFragment"
             app:destination="@id/secondFragment" />
     </fragment>
-    <fragment
+    <dialog
         android:id="@+id/secondFragment"
-        android:name="com.abhishek.androidlearn.SecondFragment"
+        android:name="com.abhishek.androidlearn.BottomSheetFragment"
         android:label="fragment_second"
-        tools:layout="@layout/fragment_second" >
+        tools:layout="@layout/fragment_bottomsheet" >
         <action
-            android:id="@+id/navigateToFirst"
+            android:id="@+id/action_secondFragment_to_firstFragment"
             app:destination="@id/firstFragment" />
-        <argument
-            android:name="total"
-            app:argType="integer" />
-    </fragment>
+    </dialog>
 </navigation>
