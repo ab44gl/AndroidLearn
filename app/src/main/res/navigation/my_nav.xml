@@ -17,8 +17,8 @@
         tools:layout="@layout/fragment_second" >
     </fragment>
     <fragment
-        android:id="@+id/thirdFragment"
-        android:name="com.abhishek.androidlearn.ThirdFragment"
-        android:label="Third"
-        tools:layout="@layout/fragment_third" />
+        android:id="@+id/viewPagerFragment"
+        android:name="com.abhishek.androidlearn.ViewPagerFragment"
+        android:label="Fruits"
+        tools:layout="@layout/fragment_viewpager" />
 </navigation>
