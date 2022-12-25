@@ -23,7 +23,7 @@
             android:id="@+id/navigateToFirst"
             app:destination="@id/firstFragment" />
         <argument
-            android:name="total"
-            app:argType="integer" />
+            android:name="user"
+            app:argType="com.abhishek.androidlearn.User" />
     </fragment>
 </navigation>

@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/frameLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F4511E"
@@ -13,13 +12,35 @@
         android:id="@+id/tv_msg_fragSec"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Second"
+        android:text="Info"
         android:textSize="50sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.5" />
+        app:layout_constraintVertical_bias="0.060000002" />
+
+    <TextView
+        android:id="@+id/textView_name_secFrag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="name"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="@+id/tv_msg_fragSec"
+        app:layout_constraintStart_toStartOf="@+id/tv_msg_fragSec"
+        app:layout_constraintTop_toBottomOf="@+id/tv_msg_fragSec" />
+
+    <TextView
+        android:id="@+id/textView_age_secFrag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="age"
+        android:textSize="34sp"
+        app:layout_constraintEnd_toEndOf="@+id/textView_name_secFrag"
+        app:layout_constraintStart_toStartOf="@+id/textView_name_secFrag"
+        app:layout_constraintTop_toBottomOf="@+id/textView_name_secFrag" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

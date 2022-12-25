@@ -20,10 +20,11 @@ class SecondFragment : Fragment() {
  ): View {
      binding = FragmentSecondBinding.inflate(inflater, container, false)
      //---------------------
-     val total=args.total
+     val user=args.user
      binding.apply {
-         tvMsgFragSec.text=total.toString()
-         tvMsgFragSec.setOnClickListener {
+         textViewNameSecFrag.text=user.name
+         textViewAgeSecFrag.text=user.age.toString()
+         root.setOnClickListener {
              //goto second fragment
              Navigation.findNavController(binding.root).navigate(R.id.navigateToFirst)
          }
