@@ -1,0 +1,57 @@
+#Service
+Questions
+    1)What is Service?
+        -it is application component which can perform long running
+        operation in background
+        -doesn't have ui
+        -once started might continue running even if app destroy
+        -a component can bind to service to interact with it and
+        even IPC(inter process communication)
+        -service can handle
+            -network transactions
+            -play music
+            -perform IO
+            -interact with content provider
+        all from background
+        -it start in main thread of hosting process
+            -so you must run any blocking operation in other thread
+            to avoid AVR errors
+        -don't use IntentService
+    2)Types of Service?
+        -types are
+            -Foreground
+                -runs even app is destroy
+                -perform operation that is noticeable to user
+                -example
+                    -audio app to play audio track
+                -Must display a Notification
+                -you can also use WorkManger for this task
+            -Background
+                -runs only when app is running
+                -perform operation that isn't noticed by user
+                -example
+                    -app use to compact its storage
+                -if API_LEVEL >= 26
+                    -system impose restrictions on running background
+                    service
+                    -alternative
+                        -JobScheduler
+            -Bound
+                -when app component binds to it by calling bindService
+                -it offer client-server interface
+                -even do across process with IPC
+                -it runs only as long as app component is bound to it
+                -multiple components can bind to service at once but
+                when all of them unbind ,service destroyed
+                -use for high frequency call
+    3)Thread vs Service?
+        -use thread when otherwise service
+            -user is interacting with application
+            -example
+                -want to play music but only while activity is running
+    4)How to?
+        -create
+        -stop
+        -communicate with UI
+            -try to use LocalBroadcastReceiver
+
