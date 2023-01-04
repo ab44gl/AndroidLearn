@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">AndroidLearn</string>
+    <string name="app_name">GoogleDrive</string>
     <string name="sign_failed">Try to Sign In</string>
     <string name="sign_success">Success</string>
 </resources>

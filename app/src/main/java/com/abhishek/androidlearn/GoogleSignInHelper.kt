@@ -20,6 +20,9 @@ class GoogleSignInHelper(private val activity: AppCompatActivity,private  val si
             msg+="scopes:${account.grantedScopes}\n"
             return msg
         }
+        fun getLastSignInAccount(activity: AppCompatActivity): GoogleSignInAccount? {
+            return GoogleSignIn.getLastSignedInAccount(activity)
+        }
     }
     private val signInResultLauncher=activity.registerForActivityResult(ActivityResultContracts.StartActivityForResult()){
         if(it.resultCode== AppCompatActivity.RESULT_OK){
@@ -40,6 +43,7 @@ class GoogleSignInHelper(private val activity: AppCompatActivity,private  val si
     fun isAlreadySignIn():Boolean {
         return GoogleSignIn.getLastSignedInAccount(activity)!=null
     }
+
 
     fun signIn() {
         val account = GoogleSignIn.getLastSignedInAccount(activity)
