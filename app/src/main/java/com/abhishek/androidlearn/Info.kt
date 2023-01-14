@@ -3,7 +3,7 @@ package com.abhishek.androidlearn
 import kotlin.random.Random
 
 data class Info(
-    val id: Int,
+    var id: Int,
     var progress: Int
 ) {
     companion object {
