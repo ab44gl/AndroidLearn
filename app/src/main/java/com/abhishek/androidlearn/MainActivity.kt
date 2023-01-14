@@ -1,35 +1,57 @@
 package com.abhishek.androidlearn
 
 import android.os.Bundle
-import android.view.inputmethod.EditorInfo
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.abhishek.androidlearn.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
-   private  lateinit var binding:ActivityMainBinding
-   private  val myDataViewModel:MyDataViewModel by viewModels()
-   override fun onCreate(savedInstanceState: Bundle?) {
-       super.onCreate(savedInstanceState)
+    private lateinit var binding: ActivityMainBinding
+    private val viewModel: LiveDataViewModel by viewModels { LiveDataVMFactory }
+    var currentTime = ""
+    var transformTime = ""
+    var emitPlusEmitSource = ""
+    var cacheRemote = ""
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
 
-       binding=ActivityMainBinding.inflate(layoutInflater)
-       setContentView(binding.root)
-       //-------------------------------------
-       myDataViewModel.currentName.observe(this@MainActivity){
-           binding.tvMsgAm.text=it
-       }
-       binding.apply {
-           etMsgMact.setOnEditorActionListener { _, actionId, _ ->
-               if (actionId == EditorInfo.IME_ACTION_DONE) {
-                   myDataViewModel.currentName.value = etMsgMact.text.toString()
-                   return@setOnEditorActionListener true;
-               }
-               return@setOnEditorActionListener false;
-           }
-           myDataViewModel.currentTime.observe(this@MainActivity) {
-               tvTime.text = it
-           }
-       }
-   }
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        //-------------------------------------
+        binding.apply {
+            buttonRefresh.setOnClickListener {
+                viewModel.refresh()
+            }
+        }
+        viewModel.currentTime.observe(this) {
+            currentTime = "$it"
+            updateMessage()
+        }
+        viewModel.currentTimeTransformed.observe(this) {
+            transformTime = "$it"
+            updateMessage()
+        }
+        viewModel.currentWeather.observe(this) {
+            emitPlusEmitSource = "$it"
+            updateMessage()
+        }
+        viewModel.cacheValue.observe(this) {
+            cacheRemote = "$it"
+            updateMessage()
+        }
+    }
+
+    private fun updateMessage() {
+
+        binding.tvMsg.text =
+            "Time\n" +
+                    "$currentTime\n" +
+                    "Transform Result\n" +
+                    "$transformTime\n" +
+                    "emit + emitSource\n" +
+                    "$emitPlusEmitSource\n" +
+                    "Cache + Remote data source\n" +
+                    "$cacheRemote"
+    }
 }
 
