@@ -11,10 +11,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
+    private val url =
+        "http://192.168.43.1:12345/Download%2F05.Mobile+%26+Web+Design+UI+Colour+Systems+%26+Palette+_+UX+Design+System+Tutorial+_+Ansh+Mehra+UX+Designer.mp4"
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: RecycleViewProgressAdapter
     private val infoList = arrayListOf<Info>()
-    private val fakeDownloadManger = FakeDownloadManger(lifecycleScope)
+    private val httpDownloadManger = HttpDownloadManger(lifecycleScope)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -25,18 +27,31 @@ class MainActivity : AppCompatActivity() {
         binding.recycleView.adapter = adapter
         binding.recycleView.layoutManager = LinearLayoutManager(this)
 
-        infoList.add(fakeDownloadManger.addUrl(""))
+        infoList.add(httpDownloadManger.addUrl(url))
         lifecycleScope.launch {
-            delay(2000)
-            withContext(Dispatchers.Main) {
-                infoList.add(fakeDownloadManger.addUrl(""))
+            repeat(10) {
+                delay(100)
+                withContext(Dispatchers.Main) {
+                    infoList.add(httpDownloadManger.addUrl(url))
+                }
             }
         }
-        fakeDownloadManger.setOnProgress {
+        httpDownloadManger.setOnProgress {
             adapter.updateInfo(it)
         }
-        fakeDownloadManger.setOnComplete {
+        httpDownloadManger.setOnComplete {
             Help.logD("completed $it")
+        }
+        binding.floatingActionButton.setOnClickListener {
+
+            try {
+                lifecycleScope.launch(Dispatchers.IO) {
+
+                }
+            } catch (e: Exception) {
+                Help.logD("error", e)
+            }
+
         }
 
 

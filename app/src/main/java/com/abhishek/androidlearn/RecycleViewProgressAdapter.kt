@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.abhishek.androidlearn.databinding.ListItemBinding
 
-class RecycleViewProgressAdapter(val infoList: List<Info>) :
+class RecycleViewProgressAdapter(private val infoList: List<Info>) :
     RecyclerView.Adapter<RecycleViewProgressAdapter.ViewHolder>() {
     inner class ViewHolder(val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
@@ -32,12 +32,7 @@ class RecycleViewProgressAdapter(val infoList: List<Info>) :
     }
 
     fun updateInfo(info: Info) {
-        infoList.forEachIndexed { index, info2 ->
-            if (info.id == info2.id) {
-                notifyItemChanged(index)
-                return
-            }
-        }
+        notifyDataSetChanged()
     }
 }
 

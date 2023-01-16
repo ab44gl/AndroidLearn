@@ -1,22 +1,19 @@
 package com.abhishek.androidlearn
 
+
+import android.os.Environment
 import androidx.lifecycle.LifecycleCoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlin.random.Random
+import java.io.FileOutputStream
+import java.io.InputStream
+import java.net.HttpURLConnection
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
-class DInfo(
-    var url: String,
-    var info: Info,
-    var sizeInBytes: Long = -1,
-    var bytesDownloaded: Long = -1,
-    var isResume: Boolean = true,
-    var isDeleted: Boolean = false
-) {}
 
-class FakeDownloadManger(private val lifecycleCoroutineScope: LifecycleCoroutineScope) :
+class HttpDownloadManger(private val lifecycleCoroutineScope: LifecycleCoroutineScope) :
     DownloadManger {
     private var count = 0
     private var dInfoList: ArrayList<DInfo> = arrayListOf()
@@ -39,48 +36,52 @@ class FakeDownloadManger(private val lifecycleCoroutineScope: LifecycleCoroutine
 
     private suspend fun startDownload(dInfo: DInfo) {
         //start download
-        val totalSizeInBytes = 1024 * 100
-        val bufferSize = 1024
+
+        val bufferSize = 1024 * 10
+        val buffer = ByteArray(bufferSize)
         var bytesDownloaded = 0
         var privValue = 0
-        //send onStart
-        withContext(Dispatchers.Main) {
-            onStartCallback?.invoke(dInfo.info)
+        val url = URL(dInfo.url);
+        val con = if (url.protocol == "http") {
+            url.openConnection() as HttpURLConnection
+        } else {
+            url.openConnection() as HttpsURLConnection
         }
-        while (bytesDownloaded < totalSizeInBytes) {
-            if (dInfo.isDeleted) {
-                onDeleteCallback?.invoke(dInfo.info)
-                return
+        val totalSizeInBytes = con.contentLength
+        val fileName = "${System.currentTimeMillis()}"
+        val file =
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "/$fileName.mp4")
+        file.createNewFile()
+        val fileOutputStream = FileOutputStream(file)
+        while (true) {
+            val size = read(con.inputStream, buffer, bufferSize)
+            // Help.logD(String(buffer))
+            if (size == -1) {
+                break;
             }
-            if (dInfo.isResume) {
-                val len = read(ByteArray(10), 0, bufferSize)
-                bytesDownloaded += len
-                if (bytesDownloaded >= totalSizeInBytes) {
-                    bytesDownloaded = totalSizeInBytes
+            bytesDownloaded += size
+            fileOutputStream.write(buffer, 0, size)
+            withContext(Dispatchers.Main) {
+                val value = (100 * (bytesDownloaded.toFloat() / totalSizeInBytes.toFloat())).toInt()
+                if (privValue != value) {
+                    privValue = value
+                    dInfo.info.progress = value
+                    onProgressCallback?.invoke(dInfo.info)
                 }
-                withContext(Dispatchers.Main) {
-                    val value =
-                        (100 * (bytesDownloaded.toFloat() / totalSizeInBytes.toFloat())).toInt()
-                    if (privValue != value) {
-                        privValue = value
-                        dInfo.info.progress = value
-                        onProgressCallback?.invoke(dInfo.info)
-                    }
-                }
-            } else {
-                delay(2000)
             }
         }
-        //send onCompleted
-        withContext(Dispatchers.Main) {
-            onCompleteCallback?.invoke(dInfo.info)
-        }
+        fileOutputStream.close()
+        Help.logD("total $totalSizeInBytes downloaded $bytesDownloaded ")
+
 
     }
 
-    private suspend fun read(buffer: ByteArray, offset: Int, length: Int): Int {
-        delay(Random.nextInt(1, 500).toLong())
-        return Random.nextInt((length * 0.5).toInt(), length)
+    private suspend fun read(
+        inputStream: InputStream,
+        buffer: ByteArray,
+        length: Int
+    ): Int {
+        return inputStream.read(buffer, 0, length)
     }
 
     override fun resume(info: Info) {
