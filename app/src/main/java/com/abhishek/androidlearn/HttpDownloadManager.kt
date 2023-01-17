@@ -36,11 +36,9 @@ class HttpDownloadManger(private val lifecycleCoroutineScope: LifecycleCoroutine
 
     private suspend fun startDownload(dInfo: DInfo) {
         //start download
-
         val bufferSize = 1024 * 10
         val buffer = ByteArray(bufferSize)
         var bytesDownloaded = 0
-        var privValue = 0
         val url = URL(dInfo.url);
         val con = if (url.protocol == "http") {
             url.openConnection() as HttpURLConnection
@@ -48,30 +46,45 @@ class HttpDownloadManger(private val lifecycleCoroutineScope: LifecycleCoroutine
             url.openConnection() as HttpsURLConnection
         }
         val totalSizeInBytes = con.contentLength
-        val fileName = "${System.currentTimeMillis()}"
+
+        val fileName = Utils.nameFromUrl(url)
+        val ext = Utils.fileTypeFromUrlConn(con)
         val file =
-            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "/$fileName.mp4")
+            Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM + "/$fileName.$ext")
         file.createNewFile()
         val fileOutputStream = FileOutputStream(file)
+        var lastTime = System.currentTimeMillis()
         while (true) {
+
             val size = read(con.inputStream, buffer, bufferSize)
-            // Help.logD(String(buffer))
-            if (size == -1) {
-                break;
-            }
+            if (size == -1) break
             bytesDownloaded += size
             fileOutputStream.write(buffer, 0, size)
-            withContext(Dispatchers.Main) {
-                val value = (100 * (bytesDownloaded.toFloat() / totalSizeInBytes.toFloat())).toInt()
-                if (privValue != value) {
-                    privValue = value
+            var currentTime = System.currentTimeMillis()
+            val diffTimeSecond = (currentTime - lastTime).toFloat() / 1000f
+            var sizeInKB = size.toFloat() / (1024f * 1024f)
+            var rate = sizeInKB / diffTimeSecond
+            if (totalSizeInBytes > 0) {
+                withContext(Dispatchers.Main) {
+                    val value =
+                        (100 * (bytesDownloaded.toFloat() / totalSizeInBytes.toFloat())).toInt()
                     dInfo.info.progress = value
+                    dInfo.info.rate = rate
                     onProgressCallback?.invoke(dInfo.info)
                 }
             }
+            lastTime = currentTime
+
+
         }
         fileOutputStream.close()
         Help.logD("total $totalSizeInBytes downloaded $bytesDownloaded ")
+        if (totalSizeInBytes < 1) {
+            withContext(Dispatchers.Main) {
+                dInfo.info.progress = 100
+                onProgressCallback?.invoke(dInfo.info)
+            }
+        }
 
 
     }

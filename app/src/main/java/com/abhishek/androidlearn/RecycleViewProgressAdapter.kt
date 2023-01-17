@@ -20,8 +20,15 @@ class RecycleViewProgressAdapter(private val infoList: List<Info>) :
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         infoList[position].let { info ->
             holder.binding.let {
-                it.progressBar.progress = info.progress
-                it.tvProgress.text = "${info.progress}%"
+                if (info.progress == -1) {
+                    it.progressBar.isIndeterminate = true
+                } else {
+                    it.progressBar.isIndeterminate = false
+                    it.progressBar.progress = info.progress
+                    it.tvProgress.text = "${info.progress}%"
+                }
+                it.tvSpeed.text = "${info.rate}"
+
             }
         }
 

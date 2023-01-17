@@ -4,7 +4,8 @@ import kotlin.random.Random
 
 data class Info(
     var id: Int,
-    var progress: Int
+    var progress: Int,
+    var rate: Float = 0f
 ) {
     companion object {
         fun randomList() = ArrayList<Info>().apply {

@@ -12,7 +12,7 @@ import kotlinx.coroutines.withContext
 
 class MainActivity : AppCompatActivity() {
     private val url =
-        "http://192.168.43.1:12345/Download%2F05.Mobile+%26+Web+Design+UI+Colour+Systems+%26+Palette+_+UX+Design+System+Tutorial+_+Ansh+Mehra+UX+Designer.mp4"
+        "http://192.168.43.1:12345/Download%2F01.Office+Hours_+Building+your+first+widget.mp4"
     private lateinit var binding: ActivityMainBinding
     private lateinit var adapter: RecycleViewProgressAdapter
     private val infoList = arrayListOf<Info>()
@@ -29,8 +29,8 @@ class MainActivity : AppCompatActivity() {
 
         infoList.add(httpDownloadManger.addUrl(url))
         lifecycleScope.launch {
-            repeat(10) {
-                delay(100)
+            repeat(0) {
+                delay(500)
                 withContext(Dispatchers.Main) {
                     infoList.add(httpDownloadManger.addUrl(url))
                 }
