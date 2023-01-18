@@ -4,8 +4,8 @@ import android.util.Log
 
 class Help {
     companion object{
-        fun log_(msg: Any?) {
-            Log.d("---------------",msg.toString())
+        fun logd(msg: Any?, e: Throwable? = null) {
+            Log.d("---------------", msg.toString(), e)
         }
     }
 }
