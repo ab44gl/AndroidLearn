@@ -5,7 +5,7 @@ import android.util.Log
 class Help {
     companion object{
         fun logd(msg: Any?, e: Throwable? = null) {
-            Log.d("---------------", msg.toString(), e)
+            Log.d("dell", msg.toString(), e)
         }
     }
 }
