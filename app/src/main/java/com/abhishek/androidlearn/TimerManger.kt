@@ -6,54 +6,47 @@ import android.os.Looper
 interface Timer {
     fun start()
     fun increment(value: Int)
-    fun resetAndStop()
     fun reset()
-    fun pause()
-    fun resume()
-    fun isResume(): Boolean
+    fun stop()
     fun isStarted(): Boolean
     fun setOnTickListener(f: (count: Int) -> Unit)
+    fun getCount(): Int
+    fun getTotal(): Int
 }
 
 class TimerManager(val delay: Int = 1000) {
-    private inner class TmTimer(var total: Int = 10) : Timer {
-        var mIsResume = false
+    private inner class TmTimer(var mTotal: Int = 10) : Timer {
         var mIsStarted = false
-        var count = 0
+        var mCount = 0
         private var tickCallback: ((count: Int) -> Unit)? = null
         override fun start() {
             mIsStarted = true
-            mIsResume = true
         }
 
         override fun increment(value: Int) {
-            total += value
-        }
-
-        override fun resetAndStop() {
-            count = 0
-            mIsStarted = false
-            mIsResume = false
-            onTick(0)
+            mTotal += value
         }
 
         override fun reset() {
-            count = 0
+            mCount = 0
         }
 
-        override fun pause() {
-            mIsResume = false
+        override fun stop() {
+            mIsStarted = false
         }
 
-        override fun resume() {
-            mIsResume = true
-        }
-
-        override fun isResume(): Boolean = mIsResume
-        override fun isStarted(): Boolean = isStarted
+        override fun isStarted(): Boolean = mIsStarted
 
         override fun setOnTickListener(f: (count: Int) -> Unit) {
             tickCallback = f
+        }
+
+        override fun getCount(): Int {
+            return mCount
+        }
+
+        override fun getTotal(): Int {
+            return mTotal
         }
 
         fun onTick(count: Int) {
@@ -82,10 +75,8 @@ class TimerManager(val delay: Int = 1000) {
     private fun start() {
         if (!isStarted) {
             isStarted = true
-            var last = System.currentTimeMillis()
             handler.postDelayed(object : Runnable {
                 override fun run() {
-                    var current = System.currentTimeMillis()
                     updateAllTimer()
                     handler.postDelayed(this, delay.toLong())
                 }
@@ -95,14 +86,14 @@ class TimerManager(val delay: Int = 1000) {
 
     private fun updateAllTimer() {
         timers.forEach {
-            if (it.mIsStarted && it.mIsResume) {
-                if (it.total == -1) {
-                    it.onTick(it.count)
-                    it.count++
+            if (it.mIsStarted) {
+                if (it.mTotal == -1) {
+                    it.onTick(it.mCount)
+                    it.mCount++
                 } else {
-                    if (it.count < it.total) {
-                        it.onTick(it.count)
-                        it.count++
+                    if (it.mCount < it.mTotal) {
+                        it.onTick(it.mCount)
+                        it.mCount++
                     }
                 }
             }

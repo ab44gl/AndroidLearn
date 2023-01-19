@@ -2,31 +2,52 @@ package com.abhishek.androidlearn
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.abhishek.androidlearn.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+    private lateinit var adapter: RvAdapter
+    private lateinit var timerManager: TimerManager
     private lateinit var binding: ActivityMainBinding
     private var count = 0
+    private val timers = arrayListOf<Timer>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
         //-------------------------------------
-        val timerManager = TimerManager(50)
-        val timer1 = timerManager.createTimer(-1).apply {
-            start()
+        timerManager = TimerManager(500)
+        binding.floatingActionButton.setOnClickListener {
+            this.addNewTimer()
+            Help.logd("${timers.size}")
         }
-        binding.apply {
-            msg.setOnClickListener {
-                if (timer1.isResume()) timer1.pause() else timer1.resume()
+        this.adapter = RvAdapter(timers)
+        addNewTimer()
+        binding.recycleView.layoutManager = LinearLayoutManager(this)
+        binding.recycleView.adapter = adapter
+        adapter.setOnItemClick { p, msg ->
+            if (msg == "resetStop") {
+                timers[p].apply {
+                    stop()
+                    reset()
+                }
+            } else {
+                timers[p].apply {
+                    if (isStarted()) stop() else start()
+                }
             }
-            timer1.setOnTickListener {
-                msg.text = "$it"
-            }
-            root.setOnClickListener {
-                timer1.reset()
-            }
-       }
-   }
+            adapter.update()
+        }
+    }
+
+    private fun addNewTimer() {
+        val timer = timerManager.createTimer(-1)
+        timers.add(timer)
+        timer.start()
+        timer.setOnTickListener {
+            adapter.update()
+        }
+        adapter.update()
+    }
 
 }
